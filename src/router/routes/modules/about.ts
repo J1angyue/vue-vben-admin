@@ -1,9 +1,8 @@
-import type { AppRouteModule } from '@/router/types';
-
 import { LAYOUT } from '@/router/constant';
 import { t } from '@/hooks/web/useI18n';
+import { RouteRecordRaw } from 'vue-router';
 
-const about: AppRouteModule = {
+const about: RouteRecordRaw = {
   path: '/about',
   name: 'About',
   component: LAYOUT,

@@ -10,7 +10,6 @@ import type { ColumnProps } from 'ant-design-vue/lib/table';
 
 import { ComponentType } from './componentType';
 import { VueNode } from '@/utils/propTypes';
-import { RoleEnum } from '@/enums/roleEnum';
 import { FixedType } from 'ant-design-vue/es/vc-table/interface';
 
 export declare type SortOrder = 'ascend' | 'descend';
@@ -463,7 +462,7 @@ export interface BasicColumn extends ColumnProps<Recordable> {
   editValueMap?: (value: any) => string;
   onEditRow?: () => void;
   // 权限编码控制是否显示
-  auth?: RoleEnum | RoleEnum[] | string | string[];
+  auth?: string | string[] | string | string[];
   // 业务控制是否显示
   ifShow?: boolean | ((column: BasicColumn) => boolean);
   // 自定义修改后显示的内容

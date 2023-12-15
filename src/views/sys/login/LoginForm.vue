@@ -83,7 +83,7 @@
 </template>
 <script lang="ts" setup>
   import { reactive, ref, unref, computed } from 'vue';
-
+  import { useRouter } from 'vue-router';
   import { Checkbox, Form, Input, Row, Col, Button, Divider } from 'ant-design-vue';
   import {
     GithubFilled,
@@ -107,9 +107,10 @@
   const FormItem = Form.Item;
   const InputPassword = Input.Password;
   const { t } = useI18n();
-  const { notification, createErrorModal } = useMessage();
+  const { createMessage } = useMessage();
   const { prefixCls } = useDesign('login');
   const userStore = useUserStore();
+  const router = useRouter();
 
   const { setLoginState, getLoginState } = useLoginState();
   const { getFormRules } = useFormRules();
@@ -119,8 +120,8 @@
   const rememberMe = ref(false);
 
   const formData = reactive({
-    account: 'vben',
-    password: '123456',
+    account: 'superadmin',
+    password: 'Sdt@2023',
   });
 
   const { validForm } = useFormValid(formRef);
@@ -134,24 +135,15 @@
     if (!data) return;
     try {
       loading.value = true;
-      const userInfo = await userStore.login({
+      await userStore.login({
         password: data.password,
         username: data.account,
         mode: 'none', //不要默认的错误提示
       });
-      if (userInfo) {
-        notification.success({
-          message: t('sys.login.loginSuccessTitle'),
-          description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.realName}`,
-          duration: 3,
-        });
-      }
+      router.replace('/');
+      createMessage.success('登录成功');
     } catch (error) {
-      createErrorModal({
-        title: t('sys.api.errorTip'),
-        content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),
-        getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
-      });
+      createMessage.error('登录失败，请重试');
     } finally {
       loading.value = false;
     }

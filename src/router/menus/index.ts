@@ -3,7 +3,7 @@ import type { RouteRecordNormalized } from 'vue-router';
 
 import { useAppStoreWithOut } from '@/store/modules/app';
 import { usePermissionStore } from '@/store/modules/permission';
-import { transformMenuModule, getAllParentPath } from '@/router/helper/menuHelper';
+import { getAllParentPath } from '@/router/helper/menuHelper';
 import { filter } from '@/utils/helper/treeHelper';
 import { isHttpUrl } from '@/utils/is';
 import { router } from '@/router';
@@ -28,28 +28,10 @@ const getPermissionMode = () => {
   const appStore = useAppStoreWithOut();
   return appStore.getProjectConfig.permissionMode;
 };
-const isBackMode = () => {
-  return getPermissionMode() === PermissionModeEnum.BACK;
-};
-
-const isRouteMappingMode = () => {
-  return getPermissionMode() === PermissionModeEnum.ROUTE_MAPPING;
-};
 
 const isRoleMode = () => {
   return getPermissionMode() === PermissionModeEnum.ROLE;
 };
-
-const staticMenus: Menu[] = [];
-(() => {
-  menuModules.sort((a, b) => {
-    return (a.orderNo || 0) - (b.orderNo || 0);
-  });
-
-  for (const menu of menuModules) {
-    staticMenus.push(transformMenuModule(menu));
-  }
-})();
 
 async function getAsyncMenus() {
   const permissionStore = usePermissionStore();
@@ -63,13 +45,7 @@ async function getAsyncMenus() {
       return show;
     });
   };
-  if (isBackMode()) {
-    return menuFilter(permissionStore.getBackMenuList);
-  }
-  if (isRouteMappingMode()) {
-    return menuFilter(permissionStore.getFrontMenuList);
-  }
-  return staticMenus;
+  return menuFilter(permissionStore.getMenuList);
 }
 
 export const getMenus = async (): Promise<Menu[]> => {

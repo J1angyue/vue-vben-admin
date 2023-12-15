@@ -6,10 +6,14 @@ export const PAGE_NOT_FOUND_NAME = 'PageNotFound';
 
 export const EXCEPTION_COMPONENT = () => import('@/views/sys/exception/Exception.vue');
 
+export const COMPONENT_KEY_IFRAME = 'IFRAME';
+export const IFRAME = () => import('@/views/sys/iframe/FrameBlank.vue');
+
 /**
  * @description: default layout
  */
 export const LAYOUT = () => import('@/layouts/default/index.vue');
+export const COMPONENT_KEY_LAYOUT = 'LAYOUT';
 
 /**
  * @description: parent-layout

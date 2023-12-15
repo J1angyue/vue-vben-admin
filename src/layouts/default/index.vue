@@ -13,7 +13,7 @@
   </Layout>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="DefaultLayout">
   import { computed, unref } from 'vue';
   import { Layout } from 'ant-design-vue';
   import { createAsyncComponent } from '@/utils/factory/createAsyncComponent';
@@ -34,8 +34,6 @@
 
   const LayoutFeatures = createAsyncComponent(() => import('@/layouts/default/feature/index.vue'));
   const LayoutFooter = createAsyncComponent(() => import('@/layouts/default/footer/index.vue'));
-
-  defineOptions({ name: 'DefaultLayout' });
 
   const { prefixCls } = useDesign('default-layout');
   const { getIsMobile } = useAppInject();

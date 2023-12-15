@@ -1,106 +1,51 @@
-import { AppRouteModule } from '@/router/types';
-import type { MenuModule, Menu, AppRouteRecordRaw } from '@/router/types';
-import { findPath, treeMap } from '@/utils/helper/treeHelper';
-import { cloneDeep } from 'lodash-es';
-import { isHttpUrl } from '@/utils/is';
-import { RouteParams } from 'vue-router';
-import { toRaw } from 'vue';
+import type { Menu } from '@/router/types';
+import { findPath } from '@/utils/helper/treeHelper';
+import { getMenuListResultModel } from '@/api/sys/model/menuModel';
+import { joinPath } from '@/router/helper/pathHelper';
 
 export function getAllParentPath<T = Recordable>(treeData: T[], path: string) {
   const menuList = findPath(treeData, (n) => n.path === path) as Menu[];
   return (menuList || []).map((item) => item.path);
 }
 
-// 路径处理
-function joinParentPath(menus: Menu[], parentPath = '') {
-  for (let index = 0; index < menus.length; index++) {
-    const menu = menus[index];
-    // https://next.router.vuejs.org/guide/essentials/nested-routes.html
-    // Note that nested paths that start with / will be treated as a root path.
-    // 请注意，以 / 开头的嵌套路径将被视为根路径。
-    // This allows you to leverage the component nesting without having to use a nested URL.
-    // 这允许你利用组件嵌套，而无需使用嵌套 URL。
-    if (!(menu.path.startsWith('/') || isHttpUrl(menu.path))) {
-      // path doesn't start with /, nor is it a url, join parent path
-      // 路径不以 / 开头，也不是 url，加入父路径
-      menu.path = `${parentPath}/${menu.path}`;
-    }
-    if (menu?.children?.length) {
-      joinParentPath(menu.children, menu.meta?.hidePathForChildren ? parentPath : menu.path);
-    }
-  }
-}
-
-// Parsing the menu module
-export function transformMenuModule(menuModule: MenuModule): Menu {
-  const { menu } = menuModule;
-
-  const menuList = [menu];
-
-  joinParentPath(menuList);
-  return menuList[0];
-}
-
 // 将路由转换成菜单
-export function transformRouteToMenu(routeModList: AppRouteModule[], routerMapping = false) {
-  // 借助 lodash 深拷贝
-  const cloneRouteModList = cloneDeep(routeModList);
-  const routeList: AppRouteRecordRaw[] = [];
+export function transformBackendMenuToFrontendMenu(
+  backendMenus: getMenuListResultModel[],
+  parentPath?: string,
+): Menu[] {
+  const menus: Menu[] = [];
 
-  // 对路由项进行修改
-  cloneRouteModList.forEach((item) => {
-    if (routerMapping && item.meta.hideChildrenInMenu && typeof item.redirect === 'string') {
-      item.path = item.redirect;
+  for (let backendMenu of backendMenus) {
+    if (!backendMenu.visible) {
+      continue;
     }
 
-    if (item.meta?.single) {
-      const realItem = item?.children?.[0];
-      realItem && routeList.push(realItem);
-    } else {
-      routeList.push(item);
+    // 处理不始终显示
+    if (!backendMenu.alwaysShow) {
+      const visibleChildren = backendMenu.children?.filter((menu) => menu.visible) || [];
+      // 不始终显示时，若没有可见的子级菜单，本级也不显示
+      if (!Array.isArray(backendMenu.children) || !visibleChildren.length) {
+        continue;
+      }
+      // 不始终显示时，若只有一个可见子级菜单，只展示一个子级菜单，本级就不展示了
+      if (backendMenu.children.filter((menu) => menu.visible).length === 1) {
+        parentPath = backendMenu.path;
+        backendMenu = backendMenu.children[0];
+      }
     }
-  });
-  // 提取树指定结构
-  const list = treeMap(routeList, {
-    conversion: (node: AppRouteRecordRaw) => {
-      const { meta: { title, hideMenu = false } = {} } = node;
 
-      return {
-        ...(node.meta || {}),
-        meta: node.meta,
-        name: title,
-        hideMenu,
-        path: node.path,
-        ...(node.redirect ? { redirect: node.redirect } : {}),
-      };
-    },
-  });
-  // 路径处理
-  joinParentPath(list);
-  return cloneDeep(list);
-}
-
-/**
- * config menu with given params
- */
-const menuParamRegex = /(?::)([\s\S]+?)((?=\/)|$)/g;
-
-export function configureDynamicParamsMenu(menu: Menu, params: RouteParams) {
-  const { path, paramPath } = toRaw(menu);
-  let realPath = paramPath ? paramPath : path;
-  const matchArr = realPath.match(menuParamRegex);
-
-  matchArr?.forEach((it) => {
-    const realIt = it.substr(1);
-    if (params[realIt]) {
-      realPath = realPath.replace(`:${realIt}`, params[realIt] as string);
-    }
-  });
-  // save original param path.
-  if (!paramPath && matchArr && matchArr.length > 0) {
-    menu.paramPath = path;
+    const path = parentPath ? joinPath(parentPath, backendMenu.path) : backendMenu.path;
+    menus.push({
+      id: backendMenu.id,
+      parentId: backendMenu.parentId,
+      path,
+      name: backendMenu.name,
+      icon: backendMenu.icon,
+      children: backendMenu.children
+        ? transformBackendMenuToFrontendMenu(backendMenu.children, path)
+        : [],
+    });
   }
-  menu.path = realPath;
-  // children
-  menu.children?.forEach((item) => configureDynamicParamsMenu(item, params));
+
+  return menus;
 }

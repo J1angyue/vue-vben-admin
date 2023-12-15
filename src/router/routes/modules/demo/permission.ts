@@ -1,7 +1,6 @@
 import type { AppRouteModule } from '@/router/types';
 
 import { getParentLayout, LAYOUT } from '@/router/constant';
-import { RoleEnum } from '@/enums/roleEnum';
 import { t } from '@/hooks/web/useI18n';
 
 const permission: AppRouteModule = {
@@ -46,7 +45,7 @@ const permission: AppRouteModule = {
           component: () => import('@/views/demo/permission/front/AuthPageA.vue'),
           meta: {
             title: t('routes.demo.permission.frontTestA'),
-            roles: [RoleEnum.SUPER],
+            roles: ['super'],
           },
         },
         {
@@ -55,7 +54,7 @@ const permission: AppRouteModule = {
           component: () => import('@/views/demo/permission/front/AuthPageB.vue'),
           meta: {
             title: t('routes.demo.permission.frontTestB'),
-            roles: [RoleEnum.TEST],
+            roles: ['test'],
           },
         },
       ],

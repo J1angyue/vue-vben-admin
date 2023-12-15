@@ -15,11 +15,11 @@
     <div class="mt-4">
       权限切换(请先切换权限模式为前端角色权限模式):
       <Space>
-        <a-button @click="changeRole(RoleEnum.SUPER)" :type="isSuper ? 'primary' : 'default'">
-          {{ RoleEnum.SUPER }}
+        <a-button @click="changeRole('super')" :type="isSuper ? 'primary' : 'default'">
+          {{ 'super' }}
         </a-button>
-        <a-button @click="changeRole(RoleEnum.TEST)" :type="isTest ? 'primary' : 'default'">
-          {{ RoleEnum.TEST }}
+        <a-button @click="changeRole('test')" :type="isTest ? 'primary' : 'default'">
+          {{ 'test' }}
         </a-button>
       </Space>
     </div>
@@ -29,7 +29,6 @@
   import { computed } from 'vue';
   import { Alert, Space } from 'ant-design-vue';
   import { useUserStore } from '@/store/modules/user';
-  import { RoleEnum } from '@/enums/roleEnum';
   import { usePermission } from '@/hooks/web/usePermission';
   import { PageWrapper } from '@/components/Page';
   import CurrentPermissionMode from '../CurrentPermissionMode.vue';
@@ -37,8 +36,8 @@
   const { changeRole } = usePermission();
   const userStore = useUserStore();
 
-  const isSuper = computed(() => userStore.getRoleList.includes(RoleEnum.SUPER));
-  const isTest = computed(() => userStore.getRoleList.includes(RoleEnum.TEST));
+  const isSuper = computed(() => userStore.getRoleList.includes('super'));
+  const isTest = computed(() => userStore.getRoleList.includes('test'));
 </script>
 <style lang="less" scoped>
   .demo {

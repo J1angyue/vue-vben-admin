@@ -1,17 +1,13 @@
-import type { RouteMeta } from 'vue-router';
-
-export interface RouteItem {
+export interface getMenuListResultModel {
+  id: number;
+  parentId: number;
+  name: string;
   path: string;
-  component: any;
-  meta: RouteMeta;
-  name?: string;
-  alias?: string | string[];
-  redirect?: string;
-  caseSensitive?: boolean;
-  children?: RouteItem[];
+  component: string;
+  componentName: string;
+  icon: string;
+  visible: boolean;
+  keepAlive: boolean;
+  alwaysShow: boolean;
+  children: Nullable<getMenuListResultModel[]>;
 }
-
-/**
- * @description: Get menu return value
- */
-export type getMenuListResultModel = RouteItem[];
