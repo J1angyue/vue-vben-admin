@@ -29,7 +29,7 @@ export function transformBackendMenuToFrontendMenu(
       }
       // 不始终显示时，若只有一个可见子级菜单，只展示一个子级菜单，本级就不展示了
       if (backendMenu.children.filter((menu) => menu.visible).length === 1) {
-        parentPath = backendMenu.path;
+        parentPath = parentPath ? joinPath(parentPath, backendMenu.path) : backendMenu.path;
         backendMenu = backendMenu.children[0];
       }
     }
