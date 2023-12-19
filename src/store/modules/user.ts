@@ -125,7 +125,7 @@ export const useUserStore = defineStore({
     },
     async getUserInfoAction(): Promise<UserInfo | null> {
       const { createMessage } = useMessage();
-      createMessage.loading('正在加载您的信息……');
+      createMessage.loading('正在加载您的信息…');
       try {
         const userInfo = await getUserInfo();
         this.setRoleList(Array.isArray(userInfo.roles) ? userInfo.roles : []);

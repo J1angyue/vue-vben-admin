@@ -4,6 +4,7 @@ import { usePermissionStoreWithOut } from '@/store/modules/permission';
 
 import { PageEnum } from '@/enums/pageEnum';
 import { useUserStoreWithOut } from '@/store/modules/user';
+import { PAGE_NOT_FOUND_ROUTE } from '../routes/basic';
 
 const LOGIN_PATH = PageEnum.BASE_LOGIN;
 
@@ -56,7 +57,7 @@ export function createPermissionGuard(router: Router) {
     routes.forEach(router.addRoute);
 
     if (!permissionStore.menuList.length) {
-      next(false);
+      next(new Error('No permission menus.'));
       return;
     }
 
@@ -65,6 +66,12 @@ export function createPermissionGuard(router: Router) {
         replace: true,
         path: permissionStore.menuList[0].path,
       });
+      return;
+    }
+
+    if (to.name === PAGE_NOT_FOUND_ROUTE.name) {
+      next({ path: to.fullPath, replace: true });
+      return;
     }
 
     next();

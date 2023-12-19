@@ -56,7 +56,10 @@ function createConfirm(options: ModalOptionsEx) {
     ...options,
     content: renderContent(options),
   };
-  return Modal.confirm(opt);
+  let destroy: Nullable<() => void> = null;
+  return new Promise((onOk, okCancel) => {
+    destroy = Modal.confirm(Object.assign(opt, { onOk, okCancel })).destroy;
+  }).finally(destroy);
 }
 
 const getBaseOptions = () => {

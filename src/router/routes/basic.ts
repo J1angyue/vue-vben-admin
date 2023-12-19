@@ -39,7 +39,7 @@ export const REDIRECT_ROUTE: RouteRecordRaw = {
     {
       path: '/redirect/:path(.*)/:_redirect_type(.*)/:_origin_params(.*)?',
       name: REDIRECT_NAME,
-      component: () => import('@/views/sys/redirect/index.vue'),
+      component: () => import('@/views/system/redirect/index.vue'),
       meta: {
         title: REDIRECT_NAME,
         hideBreadcrumb: true,
@@ -62,7 +62,7 @@ export const ERROR_LOG_ROUTE: RouteRecordRaw = {
     {
       path: 'list',
       name: 'ErrorLogList',
-      component: () => import('@/views/sys/error-log/index.vue'),
+      component: () => import('@/views/system/error-log/index.vue'),
       meta: {
         title: t('routes.basic.errorLogList'),
         hideBreadcrumb: true,

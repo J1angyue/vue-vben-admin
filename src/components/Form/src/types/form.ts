@@ -39,7 +39,7 @@ export interface FormActionType {
     first?: boolean | undefined,
   ) => Promise<void>;
   validateFields: (nameList?: NamePath[]) => Promise<any>;
-  validate: <T = Recordable>(nameList?: NamePath[] | false) => Promise<T>;
+  validate: (nameList?: NamePath[] | false) => Promise<any>;
   scrollToField: (name: NamePath, options?: ScrollOptions) => Promise<void>;
 }
 

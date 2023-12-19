@@ -1,4 +1,4 @@
-import { isArray, isFunction, isEmpty, isObject, isString, isNil } from '@/utils/is';
+import { isEmpty, isObject, isNil } from '@/utils/is';
 import { dateUtil } from '@/utils/dateUtil';
 import { unref } from 'vue';
 import type { Ref, ComputedRef } from 'vue';
@@ -63,7 +63,7 @@ export function useFormValues({
     for (const item of Object.entries(values)) {
       let [, value] = item;
       const [key] = item;
-      if (!key || (isArray(value) && value.length === 0) || isFunction(value)) {
+      if (!key) {
         continue;
       }
       const transformDateFunc = unref(getProps).transformDateFunc;
@@ -71,18 +71,6 @@ export function useFormValues({
         value = transformDateFunc?.(value);
       }
 
-      if (isArray(value) && value[0]?.format && value[1]?.format) {
-        value = value.map((item) => transformDateFunc?.(item));
-      }
-      // Remove spaces
-      if (isString(value)) {
-        // remove params from URL
-        if (value === '') {
-          value = undefined;
-        } else {
-          value = value.trim();
-        }
-      }
       if (!tryDeconstructArray(key, value, res) && !tryDeconstructObject(key, value, res)) {
         // 没有解构成功的，按原样赋值
         set(res, key, value);

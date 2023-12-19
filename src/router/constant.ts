@@ -4,10 +4,10 @@ export const PARENT_LAYOUT_NAME = 'ParentLayout';
 
 export const PAGE_NOT_FOUND_NAME = 'PageNotFound';
 
-export const EXCEPTION_COMPONENT = () => import('@/views/sys/exception/Exception.vue');
+export const EXCEPTION_COMPONENT = () => import('@/views/system/exception/Exception.vue');
 
 export const COMPONENT_KEY_IFRAME = 'IFRAME';
-export const IFRAME = () => import('@/views/sys/iframe/FrameBlank.vue');
+export const IFRAME = () => import('@/views/system/iframe/FrameBlank.vue');
 
 /**
  * @description: default layout

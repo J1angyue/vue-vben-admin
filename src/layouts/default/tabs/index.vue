@@ -8,7 +8,7 @@
       :tabBarGutter="3"
       :activeKey="activeKeyRef"
       @change="handleChange"
-      @edit="(e) => handleEdit(`${e}`)"
+      @edit="handleEdit($event.toString())"
     >
       <template v-for="item in getTabsState" :key="item.query ? item.fullPath : item.path">
         <Tabs.TabPane :closable="!(item && item.meta && item.meta.affix)">

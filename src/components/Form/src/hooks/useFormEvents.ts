@@ -359,8 +359,7 @@ export function useFormEvents({
     } else {
       _nameList = nameList === Array.isArray(nameList) ? nameList : undefined;
     }
-    const values = await unref(formElRef)?.validate(_nameList);
-    return handleFormValues(values);
+    return await unref(formElRef)?.validate(_nameList);
   }
 
   async function clearValidate(name?: string | string[]) {
