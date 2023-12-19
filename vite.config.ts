@@ -17,7 +17,7 @@ export default defineApplicationConfig({
     server: {
       proxy: {
         '/admin-api': {
-          target: 'http://10.10.30.36:48280',
+          target: 'http://10.10.21.43:48180',
         },
       },
     },

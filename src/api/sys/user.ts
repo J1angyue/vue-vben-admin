@@ -1,5 +1,10 @@
 import { defHttp } from '@/utils/http/axios';
-import { LoginParams, LoginResultModel, GetUserInfoModel } from './model/userModel';
+import {
+  LoginParams,
+  LoginResultModel,
+  GetUserInfoModel,
+  GetSysUserModel,
+} from './model/userModel';
 
 import { ErrorMessageMode } from '#/axios';
 
@@ -55,4 +60,32 @@ export function testRetry() {
       },
     },
   );
+}
+
+export function getSysUserPage(params) {
+  return defHttp.get<GetSysUserModel[]>({ url: '/system/user/page', params });
+}
+
+export function getSysUserbyId(id) {
+  return defHttp.get<GetSysUserModel>({ url: '/system/user/get', params: { id } });
+}
+
+export function createSysUser(data) {
+  return defHttp.post({ url: '/system/user/create', data });
+}
+
+export function updateSysUser(data: GetSysUserModel) {
+  return defHttp.put({ url: '/system/user/update', data });
+}
+
+export function updateSysUserStatus(data: { id: number; status: number | string }) {
+  return defHttp.put({ url: '/system/user/update-status', data });
+}
+
+export function delSysUserById(id) {
+  return defHttp.delete({ url: '/system/user/delete?id=' + id });
+}
+
+export function getUserRoleIds(userId) {
+  return defHttp.get({ url: '/system/permission/list-user-roles', params: { userId } });
 }

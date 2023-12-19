@@ -1,3 +1,5 @@
+import { getMenuListResultModel } from './menuModel';
+
 /**
  * @description: Login interface parameters
  */
@@ -28,8 +30,23 @@ export interface GetUserInfoModel {
   };
   permissions: string[];
   postName: string[];
-  deptDO: {
-    id: number;
-    name: string;
-  };
+  menus: getMenuListResultModel[];
+}
+
+export interface GetSysUserModel {
+  avatar?: string;
+  createTime: number;
+  dept: { id: number; name: string };
+  deptId: number;
+  email?: '';
+  id?: number;
+  loginDate?: number;
+  loginIp?: string;
+  mobile?: string;
+  nickname?: string;
+  postIds: number[];
+  remark?: string;
+  sex?: number;
+  status: number;
+  username: string;
 }

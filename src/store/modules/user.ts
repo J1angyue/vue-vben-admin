@@ -1,16 +1,16 @@
+import { h } from 'vue';
+import { defineStore } from 'pinia';
+
 import type { UserInfo } from '#/store';
 import type { ErrorMessageMode } from '#/axios';
-import { defineStore } from 'pinia';
 import { store } from '@/store';
 import { PageEnum } from '@/enums/pageEnum';
 import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum';
 import { getAuthCache, setAuthCache } from '@/utils/auth';
-import { LoginParams } from '@/api/sys/model/userModel';
+import { LoginParams, GetUserInfoModel } from '@/api/sys/model/userModel';
 import { getUserInfo, loginApi, requestLogout } from '@/api/sys/user';
 import { useMessage } from '@/hooks/web/useMessage';
 import { router } from '@/router';
-
-import { h } from 'vue';
 
 import AES from 'crypto-js/aes';
 import EncUTF8 from 'crypto-js/enc-utf8';
@@ -123,20 +123,18 @@ export const useUserStore = defineStore({
         return Promise.reject(error);
       }
     },
-    async getUserInfoAction(): Promise<UserInfo | null> {
+    async getUserInfoAction(): Promise<GetUserInfoModel | null> {
       const { createMessage } = useMessage();
       createMessage.loading('正在加载您的信息…');
       try {
         const userInfo = await getUserInfo();
         this.setRoleList(Array.isArray(userInfo.roles) ? userInfo.roles : []);
         this.setUserInfo(userInfo.user);
-        this.setPermissions(userInfo.permissions);
         this.setPosts(userInfo.postName);
-        this.setDept(userInfo.deptDO);
+        return userInfo;
       } finally {
         createMessage.destroy();
       }
-      return this.userInfo;
     },
     /**
      * @description: logout

@@ -46,11 +46,11 @@
 
   function confirmDelete(id) {
     createConfirm({
-      content: '确认删除该字典类型码？',
+      content: '确认删除该字典类型吗？',
       iconType: 'warning',
     })
       .then(() => deleteDictType(id))
       .then(() => createMessage.success('删除成功'))
-      .then(reload);
+      .then(() => reload());
   }
 </script>

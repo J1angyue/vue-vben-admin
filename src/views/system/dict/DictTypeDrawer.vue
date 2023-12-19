@@ -55,9 +55,9 @@
     try {
       const value: DictType = await validate();
       const api = value.id ? updateDictType : createDictType;
+      setDrawerProps({ confirmLoading: true });
       await api(value);
       createMessage.success(getTitle.value + '成功');
-      setDrawerProps({ confirmLoading: true });
       closeDrawer();
       emits('success');
     } finally {

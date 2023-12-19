@@ -1,8 +1,10 @@
 import type { App } from 'vue';
 import { Button } from './Button';
-import { Input, Layout, Tag } from 'ant-design-vue';
+import { Input, Layout, Tag, Row, Col } from 'ant-design-vue';
 import VXETable from 'vxe-table';
 
+const components = [Button, Input, Layout, Tag, Row, Col, VXETable];
+
 export function registerGlobComp(app: App) {
-  app.use(Input).use(Button).use(Layout).use(Tag).use(VXETable);
+  components.forEach(app.use);
 }

@@ -10,6 +10,13 @@ const LOGIN_PATH = PageEnum.BASE_LOGIN;
 
 const whitePathList: Array<PageEnum | string> = [LOGIN_PATH];
 
+function getNearestLeafChild(menus) {
+  while (menus[0].children && menus[0].children.length) {
+    menus = menus[0].children;
+  }
+  return menus[0] || PAGE_NOT_FOUND_ROUTE;
+}
+
 export function createPermissionGuard(router: Router) {
   const userStore = useUserStoreWithOut();
   const permissionStore = usePermissionStoreWithOut();
@@ -32,29 +39,29 @@ export function createPermissionGuard(router: Router) {
       return;
     }
 
-    if (!userStore.userInfo) {
-      try {
-        await userStore.getUserInfoAction();
-      } catch {
-        await userStore.logout(false);
-        next({
-          path: LOGIN_PATH,
-          query: {
-            redirect: decodeURIComponent(to.fullPath),
-          },
-        });
-        return;
-      }
-    }
-
-    if (permissionStore.menuList.length) {
+    if (userStore.userInfo) {
       next();
       return;
     }
 
-    const routes = await permissionStore.buildRoutesAction();
-
-    routes.forEach(router.addRoute);
+    try {
+      const userInfo = await userStore.getUserInfoAction();
+      if (!userInfo) {
+        throw new Error('加载用户信息失败');
+      }
+      permissionStore.setPermCodeList(userInfo.permissions);
+      const routes = await permissionStore.buildRoutesAction(userInfo.menus);
+      routes.forEach(router.addRoute);
+    } catch {
+      await userStore.logout(false);
+      next({
+        path: LOGIN_PATH,
+        query: {
+          redirect: decodeURIComponent(to.fullPath),
+        },
+      });
+      return;
+    }
 
     if (!permissionStore.menuList.length) {
       next(new Error('No permission menus.'));
@@ -64,7 +71,7 @@ export function createPermissionGuard(router: Router) {
     if (to.path === PageEnum.BASE_HOME) {
       next({
         replace: true,
-        path: permissionStore.menuList[0].path,
+        path: getNearestLeafChild(permissionStore.menuList).path,
       });
       return;
     }
