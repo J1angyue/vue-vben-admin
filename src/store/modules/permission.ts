@@ -4,7 +4,7 @@ import { store } from '@/store';
 import { useUserStore } from './user';
 import { transformBackendMenuToRoute } from '@/router/helper/routeHelper';
 import { transformBackendMenuToFrontendMenu } from '@/router/helper/menuHelper';
-import { getMenuList } from '@/api/sys/menu';
+import { getAuthMenuList } from '@/api/sys/menu';
 import { useMessage } from '@/hooks/web/useMessage';
 import { Menu } from '@/router/types';
 
@@ -56,16 +56,15 @@ export const usePermissionStore = defineStore({
       this.setPermCodeList(useUserStore().permissions);
       const backendMenus = await requestBackendMenus();
       const frontEndMenus = transformBackendMenuToFrontendMenu(backendMenus);
-      const routes = transformBackendMenuToRoute(backendMenus);
       this.setMenuList(frontEndMenus);
-      return routes;
+      return transformBackendMenuToRoute(backendMenus);
     },
   },
 });
 
 function requestBackendMenus() {
   createMessage.loading('菜单加载中……', 0);
-  return getMenuList()
+  return getAuthMenuList()
     .catch(() => {
       createMessage.destroy();
       createMessage.error('菜单加载异常');
